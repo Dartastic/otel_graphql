@@ -29,8 +29,8 @@ GraphQL operations are coarser than HTTP requests — one `POST
 /graphql` can be any of hundreds of operations the front end
 issues. If you only have HTTP spans, every span has the same name
 and you can't compare latency across operations. This Link gives
-you one span per *operation name*, so a Tempo span-by-name view
-slices cleanly by GraphQL endpoint.
+you one span per *operation name*, so a span-by-name view in your
+tracing backend slices cleanly by GraphQL endpoint.
 
 The integration is **opt-in**: the OTel SDK does not depend on
 `gql_link` or `graphql`. Add this package only when you want it.
@@ -66,7 +66,21 @@ the response stream closes:
 
 GraphQL errors *inside* a response (partial failures) flip the
 span status to Error on first occurrence but the stream keeps
-flowing — Tempo still sees the rest of the data path.
+flowing — the trace still sees the rest of the data path.
+
+## Variables are never captured
+
+There is deliberately **no option** to record GraphQL variables.
+Variables routinely carry PII and secrets — emails, passwords,
+auth tokens, user ids — so variable capture is off by design, not
+merely off by default. If you need a specific, known-safe value on
+the span, add it yourself from your own code where you can see
+what it is.
+
+The one opt-in is `recordDocument` (default `false`), which
+records the *document text* (the operation shape, with variable
+references like `$id`, not values). Even that stays off by default
+because documents can leak schema details.
 
 ## Configuration
 

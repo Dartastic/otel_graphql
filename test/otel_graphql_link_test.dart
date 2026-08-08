@@ -42,7 +42,10 @@ class _FakeTerminatingLink extends Link {
   });
 
   final gql.Response? response;
-  final Object? error;
+
+  /// Typed `Error?` rather than `Object?` so the `throw` below satisfies
+  /// `only_throw_errors`. Every test currently injects a `StateError`.
+  final Error? error;
 
   @override
   Stream<gql.Response> request(gql.Request request,

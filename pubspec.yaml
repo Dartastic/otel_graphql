@@ -1,8 +1,9 @@
 name: otel_graphql
-description: OpenTelemetry instrumentation for the `gql_link` chain used
-  by `package:graphql` and `package:graphql_flutter`. A Link that emits
-  one span per GraphQL operation with `graphql.*` semconv attributes.
-version: 0.1.0-beta.1-wip
+description: >-
+  OpenTelemetry instrumentation for the `gql_link` chain behind
+  `package:graphql` and `graphql_flutter`. A Link emitting one span per
+  operation with `graphql.*` semconv attributes.
+version: 0.2.0-wip
 repository: https://github.com/dartastic/otel_graphql
 homepage: https://dartastic.io
 
@@ -10,14 +11,14 @@ environment:
   sdk: ^3.0.0
 
 dependencies:
-  dartastic_opentelemetry: ^1.1.0-beta.4
-  dartastic_opentelemetry_api: ^1.0.0-beta.6
+  dartastic_opentelemetry: ^1.1.0-beta.12
+  dartastic_opentelemetry_api: ^1.0.0-rc.1
   gql: ^1.0.0
   gql_exec: ^1.0.0
   gql_link: ^1.0.0
 
 dev_dependencies:
-  pubspec_parse: ^1.5.0
-  pub_semver: ^2.0.0
   dart_flutter_team_lints: ^3.5.2
+  pub_semver: ^2.0.0
+  pubspec_parse: ^1.5.0
   test: ^1.26.3

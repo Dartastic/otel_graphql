@@ -9,8 +9,6 @@ import 'package:gql/language.dart' show printNode;
 import 'package:gql_exec/gql_exec.dart';
 import 'package:gql_link/gql_link.dart';
 
-import 'graphql_semantics.dart';
-
 /// OpenTelemetry instrumentation for the `gql_link` chain used by
 /// `package:graphql` and `package:graphql_flutter`.
 ///
@@ -47,6 +45,13 @@ import 'graphql_semantics.dart';
 /// - **Span status**: `Error` if the Response carries GraphQL errors
 ///   (`response.errors`) or the underlying stream errors, otherwise
 ///   unset.
+///
+/// GraphQL **variables are never captured** — there is deliberately
+/// no option for it. Variables routinely carry PII and secrets
+/// (emails, passwords, tokens, user ids), so capture stays off by
+/// design rather than off by default. The document capture
+/// ([recordDocument], default `false`) is the only opt-in, and even
+/// that can leak schema details and variable *shapes*.
 class OTelGraphqlLink extends Link {
   /// Creates the link.
   ///
@@ -61,8 +66,7 @@ class OTelGraphqlLink extends Link {
     Tracer? tracer,
     this.recordDocument = false,
     this.documentMaxLength = 1024,
-  }) : _tracer =
-            tracer ?? OTel.tracerProvider().getTracer('otel_graphql');
+  }) : _tracer = tracer ?? OTel.tracerProvider().getTracer('otel_graphql');
 
   final Tracer _tracer;
 
@@ -111,13 +115,13 @@ class OTelGraphqlLink extends Link {
 
     final attrs = <String, Object>{};
     if (typeStr != null) {
-      attrs[GraphqlSemantics.operationType.key] = typeStr;
+      attrs[Graphql.graphqlOperationType.key] = typeStr;
     }
     if (operationName != null) {
-      attrs[GraphqlSemantics.operationName.key] = operationName;
+      attrs[Graphql.graphqlOperationName.key] = operationName;
     }
     if (recordDocument) {
-      attrs[GraphqlSemantics.document.key] = _clipDocument(operation.document);
+      attrs[Graphql.graphqlDocument.key] = _clipDocument(operation.document);
     }
 
     return _tracer.startSpan(
@@ -135,7 +139,7 @@ class OTelGraphqlLink extends Link {
   void _setTransportError(APISpan span, Object error, StackTrace stackTrace) {
     span.addAttributes(OTel.attributes([
       OTel.attributeString(
-        ErrorResource.errorType.key,
+        ErrorAttributes.errorType.key,
         error.runtimeType.toString(),
       ),
     ]));
@@ -147,11 +151,11 @@ class OTelGraphqlLink extends Link {
   String? _typeString(OperationType? type) {
     switch (type) {
       case OperationType.query:
-        return 'query';
+        return GraphqlOperationType.query.value;
       case OperationType.mutation:
-        return 'mutation';
+        return GraphqlOperationType.mutation.value;
       case OperationType.subscription:
-        return 'subscription';
+        return GraphqlOperationType.subscription.value;
       case null:
         return null;
     }

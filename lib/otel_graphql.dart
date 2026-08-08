@@ -7,5 +7,4 @@
 /// See [OTelGraphqlLink] for usage.
 library;
 
-export 'src/graphql_semantics.dart';
 export 'src/otel_graphql_link.dart';
