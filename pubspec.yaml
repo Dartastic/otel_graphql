@@ -3,7 +3,7 @@ description: >-
   OpenTelemetry instrumentation for the `gql_link` chain behind
   `package:graphql` and `graphql_flutter`. A Link emitting one span per
   operation with `graphql.*` semconv attributes.
-version: 0.2.0
+version: 0.3.0-wip
 repository: https://github.com/dartastic/otel_graphql
 homepage: https://dartastic.io
 
