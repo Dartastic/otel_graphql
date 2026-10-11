@@ -3,7 +3,7 @@
 
 import 'dart:async';
 
-import 'package:dartastic_opentelemetry/dartastic_opentelemetry.dart';
+import 'package:dartastic_opentelemetry_api/dartastic_opentelemetry_api.dart';
 import 'package:gql/ast.dart' show DocumentNode, OperationType;
 import 'package:gql/language.dart' show printNode;
 import 'package:gql_exec/gql_exec.dart';
@@ -63,12 +63,12 @@ class OTelGraphqlLink extends Link {
   /// - [documentMaxLength] — cap on `graphql.document` when
   ///   recording is enabled. Defaults to 1024.
   OTelGraphqlLink({
-    Tracer? tracer,
+    APITracer? tracer,
     this.recordDocument = false,
     this.documentMaxLength = 1024,
-  }) : _tracer = tracer ?? OTel.tracerProvider().getTracer('otel_graphql');
+  }) : _tracer = tracer ?? OTelAPI.tracerProvider().getTracer('otel_graphql');
 
-  final Tracer _tracer;
+  final APITracer _tracer;
 
   /// Whether to attach the pretty-printed document as
   /// `graphql.document`.
@@ -126,7 +126,7 @@ class OTelGraphqlLink extends Link {
 
     return _tracer.startSpan(
       spanName,
-      attributes: OTel.attributesFromMap(attrs),
+      attributes: OTelAPI.attributesFromMap(attrs),
     );
   }
 
@@ -137,8 +137,8 @@ class OTelGraphqlLink extends Link {
   }
 
   void _setTransportError(APISpan span, Object error, StackTrace stackTrace) {
-    span.addAttributes(OTel.attributes([
-      OTel.attributeString(
+    span.addAttributes(OTelAPI.attributes([
+      OTelAPI.attributeString(
         ErrorAttributes.errorType.key,
         error.runtimeType.toString(),
       ),
