@@ -2,7 +2,7 @@ name: otel_graphql
 description: >-
   OpenTelemetry instrumentation for gql by Dartastic.io. Adds standard
   OpenTelemetry observability to applications that use gql.
-version: 0.3.1-wip
+version: 0.3.1
 repository: https://github.com/dartastic/otel_graphql
 homepage: https://dartastic.io
 
